@@ -9,31 +9,31 @@ LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
 WORKDIR /opt/Steam
 
+COPY server_script.txt ./
+
 RUN apk add curl && \
-    chmod g+rwxs /opt/Steam && \
-    curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
+  chmod g+rwxs /opt/Steam && \
+  curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 
 FROM ${IMAGE_DEBIAN_NAME}:${IMAGE_DEBIAN_VERSION} AS install
 LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
-ARG GAME_ID
+ENV STEAM_HOME=/home/steam
+ENV STEAMCMD_HOME=${STEAM_HOME}/Steam
+ENV SERVER_HOME=${STEAM_HOME}/server
 
-RUN apt-get update && apt-get install -y lib32gcc-s1 ca-certificates && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  lib32gcc-s1 ca-certificates netcat && \
   adduser --disabled-password steam && \
-     addgroup steam root && \
-        addgroup root steam && \
-    mkdir -p /home/steam/Steam /home/steam/server && \
-    chmod g+rwxs /home/steam /home/steam/Steam /home/steam/server && \
-    chown -R steam:0 /home/steam
+  addgroup steam root && \
+  addgroup root steam && \
+  mkdir -p ${STEAMCMD_HOME} ${SERVER_HOME} && \
+  chmod g+rwxs ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
+  chown -R steam:0 ${STEAM_HOME}
 
 USER steam:0
 
-WORKDIR /home/steam
+WORKDIR ${STEAM_HOME}
 
 COPY --from=build --chown=steam:0 /opt/Steam ./Steam
-COPY --chown=steam:0 server_script.txt ./Steam
-
-RUN cd ./Steam && \
-    sed -i "s/{{GAME_ID}}/${GAME_ID}/" ./server_script.txt && \
-    ./steamcmd.sh +runscript ./server_script.txt

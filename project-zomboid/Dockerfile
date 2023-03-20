@@ -1,12 +1,21 @@
-ARG BUILD_IMAGE_NAME
-ARG BUILD_IMAGE_VERSION
+ARG IMAGE_STEAMCMD_NAME
+ARG IMAGE_STEAMCMD_VERSION
 
 
-FROM ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}
+FROM ${IMAGE_STEAMCMD_NAME}:${IMAGE_STEAMCMD_VERSION}
 LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
-COPY --chown=steam:0 docker-entrypoint.sh ./server
+ARG BUILD_GAME_ID
 
-ENTRYPOINT ./server/docker-entrypoint.sh
+#ENV LD_PRELOAD=${SERVER_HOME}/jre64/lib
+ENV PZ_HOME=${STEAM_HOME}/Zomboid
 
-CMD run
+COPY --chown=steam:0 docker-entrypoint.sh ./
+
+RUN sed -i "s/{{GAME_ID}}/${BUILD_GAME_ID}/" ./Steam/server_script.txt
+
+VOLUME ["${STEAMCMD_HOME}", "${SERVER_HOME}", "${PZ_HOME}"]
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+CMD ["run"]

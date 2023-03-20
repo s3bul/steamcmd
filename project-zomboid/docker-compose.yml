@@ -1,1 +1,40 @@
-../docker-compose.yml
+version: '3.9'
+
+services:
+  server:
+    build:
+      network: host
+      args:
+        IMAGE_STEAMCMD_NAME: ${IMAGE_STEAMCMD_NAME}
+        IMAGE_STEAMCMD_VERSION: ${IMAGE_STEAMCMD_VERSION}
+        BUILD_GAME_ID: ${BUILD_GAME_ID}
+      cache_from:
+      - ${IMAGE_STEAMCMD_NAME}:${IMAGE_STEAMCMD_VERSION}
+      - ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}
+    image: ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}
+    secrets:
+    - admin_password
+    env_file:
+    - .env.server
+    ports:
+    - "27015:27015/tcp"
+    - "27036:27036/tcp"
+    - "8766-8767:8766-8767/udp"
+    - "16261-16262:16261-16262/udp"
+    - "27015:27015/udp"
+    - "27031-27036:27031-27036/udp"
+    healthcheck:
+      test: nc -z localhost 27015 && nc -z localhost 27031
+      interval: 10s
+      timeout: 2s
+      retries: 25
+      start_period: 45s
+    volumes:
+    - .docker/data/Steam:/home/steam/Steam
+    - .docker/data/server:/home/steam/server
+    - .docker/data/Zomboid:/home/steam/Zomboid
+
+secrets:
+  admin_password:
+    file: .docker/secrets/admin_password.txt
+    name: admin_password
