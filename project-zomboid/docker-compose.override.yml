@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  global:
+    build:
+      context: ..
+      args:
+        GAME_ID: 380870
+
+  game:
+    build:
+      network: host
+      args:
+        BUILD_IMAGE_NAME: ${BUILD_IMAGE_NAME}
+        BUILD_IMAGE_VERSION: ${BUILD_IMAGE_VERSION}
+      cache_from:
+      - ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}
+      - ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}-project-zomboid
+    image: ${BUILD_IMAGE_NAME}:${BUILD_IMAGE_VERSION}-project-zomboid
