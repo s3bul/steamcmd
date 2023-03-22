@@ -24,12 +24,15 @@ runServer() {
     export PZ_ADMINPASSWORD_FILE=${SERVER_HOME}/.adminpassword
     parameters="${parameters} -adminpassword \"$(cat "${PZ_ADMINPASSWORD_FILE}")\""
   fi
+  if [ -n "${PZ_ADMINUSERNAME+x}" ]; then
+    parameters="${parameters} -adminusername \"${PZ_ADMINUSERNAME}\""
+  fi
   if [ -n "${PZ_IP+x}" ]; then
     if [ "${PZ_IP}" == "0.0.0.0" ]; then
       # shellcheck disable=SC2207
       host_ip=($(hostname -I))
       PZ_IP="${host_ip[0]}"
-      echo "${PZ_IP}" > "${SERVER_HOME}"/ip.txt
+      echo "${PZ_IP}" >"${SERVER_HOME}"/ip.txt
     fi
     parameters="${parameters} -ip \"${PZ_IP}\""
   fi
