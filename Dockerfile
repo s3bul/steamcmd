@@ -38,5 +38,4 @@ WORKDIR ${STEAM_HOME}
 
 COPY --from=build --chown=steam:0 /opt/Steam ./Steam
 
-EXPOSE 27015/tcp
-EXPOSE 27015/udp
+EXPOSE 27015/tcp 27015/udp
