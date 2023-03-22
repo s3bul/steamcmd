@@ -7,12 +7,12 @@ ARG IMAGE_DEBIAN_VERSION
 FROM ${IMAGE_ALPINE_NAME}:${IMAGE_ALPINE_VERSION} AS build
 LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
-WORKDIR /opt/Steam
+WORKDIR /opt/steamcmd
 
 COPY server_script.txt ./
 
 RUN apk add curl && \
-  chmod g+rwxs /opt/Steam && \
+  chmod g+rwxs /opt/steamcmd && \
   curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 
@@ -20,7 +20,8 @@ FROM ${IMAGE_DEBIAN_NAME}:${IMAGE_DEBIAN_VERSION} AS install
 LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
 ENV STEAM_HOME=/home/steam
-ENV STEAMCMD_HOME=${STEAM_HOME}/Steam
+ENV STEAM_DIR=${STEAM_HOME}/Steam
+ENV STEAMCMD_HOME=${STEAM_HOME}/steamcmd
 ENV SERVER_HOME=${STEAM_HOME}/server
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -28,14 +29,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   adduser --disabled-password steam && \
   addgroup steam root && \
   addgroup root steam && \
-  mkdir -p ${STEAMCMD_HOME} ${SERVER_HOME} && \
-  chmod g+rwxs ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
+  mkdir -p ${STEAM_DIR} ${STEAMCMD_HOME} ${SERVER_HOME} && \
+  chmod g+rwxs ${STEAM_HOME} ${STEAM_DIR} ${STEAMCMD_HOME} ${SERVER_HOME} && \
   chown -R steam:0 ${STEAM_HOME}
 
 USER steam:0
 
 WORKDIR ${STEAM_HOME}
 
-COPY --from=build --chown=steam:0 /opt/Steam ./Steam
+COPY --from=build --chown=steam:0 /opt/steamcmd ./steamcmd
 
 EXPOSE 27015/tcp 27015/udp
