@@ -7,7 +7,6 @@ LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
 ARG BUILD_GAME_ID
 
-#ENV LD_PRELOAD=${SERVER_HOME}/jre64/lib
 ENV PZ_HOME=${STEAM_HOME}/Zomboid
 
 COPY --chown=steam:0 docker-entrypoint.sh ./
@@ -19,3 +18,5 @@ VOLUME ["${STEAMCMD_HOME}", "${SERVER_HOME}", "${PZ_HOME}"]
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 CMD ["run"]
+
+EXPOSE 8766-8767/udp 16261-16262/udp

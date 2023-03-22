@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-if [ "$1" = "run" ]; then
-  shift
+initServer() {
+  "${STEAMCMD_HOME}"/steamcmd.sh +runscript server_script.txt
+  ln -sfn "${SERVER_HOME}"/jre64/lib/libjsig.so "${SERVER_HOME}"/libjsig.so
+  ln -sfn "${SERVER_HOME}"/natives/libPZXInitThreads64.so "${SERVER_HOME}"/libPZXInitThreads64.so
+}
 
+runServer() {
   if [ ! -x "${SERVER_HOME}"/start-server.sh ]; then
-    "${STEAMCMD_HOME}"/steamcmd.sh +runscript server_script.txt
-    ln -sfn "${SERVER_HOME}"/jre64/lib/libjsig.so "${SERVER_HOME}"/libjsig.so
-    ln -sfn "${SERVER_HOME}"/natives/libPZXInitThreads64.so "${SERVER_HOME}"/libPZXInitThreads64.so
+    initServer
   fi
 
   parameters="-servername \"${PZ_SERVERNAME:-zomboid}\""
@@ -24,6 +26,7 @@ if [ "$1" = "run" ]; then
   fi
   if [ -n "${PZ_IP+x}" ]; then
     if [ "${PZ_IP}" == "0.0.0.0" ]; then
+      # shellcheck disable=SC2207
       host_ip=($(hostname -I))
       PZ_IP="${host_ip[0]}"
       echo "${PZ_IP}" > "${SERVER_HOME}"/ip.txt
@@ -71,7 +74,16 @@ if [ "$1" = "run" ]; then
   fi
 
   eval "${SERVER_HOME}/start-server.sh ${parameters} $*"
+}
+
+firstCommand=${1}
+
+case "${firstCommand}" in
+run)
+  shift
+  runServer "$@"
   exit $?
-fi
+  ;;
+esac
 
 exec "$@"
