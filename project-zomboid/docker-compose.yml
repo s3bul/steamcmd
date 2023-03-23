@@ -22,6 +22,9 @@ services:
     - admin_password
     env_file:
     - .env.server
+    environment:
+      PZ_JVM_MEMORY_MIN: ${DEPLOY_MEMORY_RESERVATION}
+      PZ_JVM_MEMORY_MAX: ${DEPLOY_MEMORY_LIMIT}
     ports:
     - "27015:27015/tcp"
     - "27015:27015/udp"
