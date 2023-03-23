@@ -31,7 +31,7 @@ services:
     - "8766-8767:8766-8767/udp"
     - "16261-16262:16261-16262/udp"
     healthcheck:
-      test: ["CMD", "cat $${PZ_HOME}/Logs/*_DebugLog-server.log | grep \"LuaNet: Initialization [DONE]\""]
+      test: ["CMD", "cat $${PZ_HOME}/Logs/$${PZ_LOG_START}-*_DebugLog-server.txt | grep \"LuaNet: Initialization [DONE]\""]
       interval: 10s
       timeout: 2s
       retries: 25
