@@ -35,7 +35,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 25
-      start_period: 90s
+      start_period: 120s
     deploy:
       resources:
         reservations:
