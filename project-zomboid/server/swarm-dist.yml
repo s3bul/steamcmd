@@ -12,6 +12,11 @@ services:
         reservations:
           cpus: '2.0'
           memory: 4g
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 5
+        window: 45s
     environment:
       PZ_ADMINPASSWORD_FILE: /run/secrets/admin_password
       PZ_ADMINUSERNAME: admin
@@ -22,9 +27,9 @@ services:
       interval: 10s
       retries: 25
       start_period: 45s
-      test: nc -z localhost 27015
+      test: ["CMD", "cat $${PZ_HOME}/Logs/*_DebugLog-server.log | grep \"LuaNet: Initialization [DONE]\""]
       timeout: 2s
-    image: s3bul/steamcmd-project-zomboid:0.2.0
+    image: s3bul/steamcmd-project-zomboid:0.3.0
     ports:
     - protocol: tcp
       published: 27015
