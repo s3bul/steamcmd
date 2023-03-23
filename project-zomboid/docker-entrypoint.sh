@@ -8,8 +8,7 @@ initServer() {
 }
 
 runServer() {
-  PZ_LOG_START=$(date +%d-%m-%y_%H)
-  export PZ_LOG_START
+  date +%d-%m-%y_%H >"${SERVER_HOME}"/log_start.txt
 
   if [ ! -x "${SERVER_HOME}"/start-server.sh ]; then
     initServer
@@ -79,8 +78,7 @@ runServer() {
     parameters="${parameters} -debug"
   fi
 
-  PZ_LOG_START=$(date +%d-%m-%y_%H)
-  export PZ_LOG_START
+  date +%d-%m-%y_%H >"${SERVER_HOME}"/log_start.txt
 
   eval "${SERVER_HOME}/start-server.sh ${parameters} $*"
 }
