@@ -24,10 +24,10 @@ services:
       PZ_JVM_MEMORY_MAX: 8g
       TZ: Europe/Warsaw
     healthcheck:
-      interval: 10s
-      retries: 25
-      start_period: 120s
-      test: ["CMD", "cat $${PZ_HOME}/Logs/$$(cat $${SERVER_HOME}/log_start.txt)-*_DebugLog-server.txt | grep \"LuaNet: Initialization .DONE.\""]
+      interval: 15s
+      retries: 50
+      start_period: 250s
+      test: nc -z localhost 27015
       timeout: 2s
     image: s3bul/steamcmd-project-zomboid:0.3.2
     ports:
