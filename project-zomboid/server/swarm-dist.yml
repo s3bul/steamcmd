@@ -29,7 +29,7 @@ services:
       start_period: 90s
       test: ["CMD", "cat $${PZ_HOME}/Logs/$$(cat $${SERVER_HOME}/log_start.txt)-*_DebugLog-server.txt | grep \"LuaNet: Initialization \\[DONE\\]\""]
       timeout: 2s
-    image: s3bul/steamcmd-project-zomboid:0.3.3
+    image: s3bul/steamcmd-project-zomboid:0.3.2
     ports:
     - protocol: tcp
       published: 27015
