@@ -22,6 +22,9 @@ services:
     - admin_password
     env_file:
     - .env.server
+    environment:
+      PZ_JVM_MEMORY_MIN: ${DEPLOY_MEMORY_RESERVATION}
+      PZ_JVM_MEMORY_MAX: ${DEPLOY_MEMORY_LIMIT}
     ports:
     - "27015:27015/tcp"
     - "27015:27015/udp"
@@ -29,10 +32,10 @@ services:
     - "16261-16262:16261-16262/udp"
     healthcheck:
       test: nc -z localhost 27015
-      interval: 10s
+      interval: 15s
       timeout: 2s
-      retries: 25
-      start_period: 45s
+      retries: 50
+      start_period: 250s
     deploy:
       resources:
         reservations:
@@ -41,6 +44,11 @@ services:
         limits:
           cpus: ${DEPLOY_CPU_LIMIT}
           memory: ${DEPLOY_MEMORY_LIMIT}
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 5
+        window: 45s
     volumes:
     - ./server/.docker/data/Steam:/home/steam/Steam
     - ./server/.docker/data/server:/home/steam/server

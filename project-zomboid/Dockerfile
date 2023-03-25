@@ -7,13 +7,13 @@ LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
 ARG BUILD_GAME_ID
 
-ENV PZ_HOME=${STEAM_HOME}/Zomboid
+ENV PZ_HOME=${USER_HOME}/Zomboid
 
-COPY --chown=steam:0 docker-entrypoint.sh ./
+COPY --chown=${STEAM_USER}:0 docker-entrypoint.sh ./
 
-RUN sed -i "s/{{GAME_ID}}/${BUILD_GAME_ID}/" ./steamcmd/server_script.txt
+RUN sed -i "s/{{GAME_ID}}/${BUILD_GAME_ID}/" ${STEAMCMD_HOME}/server_script.txt
 
-VOLUME ["${STEAM_DIR}", "${SERVER_HOME}", "${PZ_HOME}"]
+VOLUME ["${STEAM_HOME}", "${SERVER_HOME}", "${PZ_HOME}"]
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 

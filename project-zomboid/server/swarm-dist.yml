@@ -8,20 +8,28 @@ services:
       resources:
         limits:
           cpus: '4.0'
-          memory: 8192M
+          memory: 8g
         reservations:
           cpus: '2.0'
-          memory: 4096M
+          memory: 4g
+      restart_policy:
+        condition: any
+        delay: 15s
+        max_attempts: 5
+        window: 45s
     environment:
       PZ_ADMINPASSWORD_FILE: /run/secrets/admin_password
+      PZ_ADMINUSERNAME: admin
+      PZ_JVM_MEMORY_MIN: 4g
+      PZ_JVM_MEMORY_MAX: 8g
       TZ: Europe/Warsaw
     healthcheck:
-      interval: 10s
-      retries: 25
-      start_period: 45s
+      interval: 15s
+      retries: 50
+      start_period: 250s
       test: nc -z localhost 27015
       timeout: 2s
-    image: s3bul/steamcmd-project-zomboid:0.1.1
+    image: s3bul/steamcmd-project-zomboid:0.3.2
     ports:
     - protocol: tcp
       published: 27015

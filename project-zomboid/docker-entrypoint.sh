@@ -8,6 +8,8 @@ initServer() {
 }
 
 runServer() {
+  date +%d-%m-%y_%H >"${SERVER_HOME}"/log_start.txt
+
   if [ ! -x "${SERVER_HOME}"/start-server.sh ]; then
     initServer
   fi
@@ -17,7 +19,7 @@ runServer() {
     parameters="${parameters} -adminpassword \"$(cat "${PZ_ADMINPASSWORD_FILE}")\""
   elif [ -n "${PZ_ADMINPASSWORD+x}" ]; then
     parameters="${parameters} -adminpassword \"${PZ_ADMINPASSWORD}\""
-  else
+  elif [ -n "${PZ_ADMINPASSWORD_AUTO+x}" ]; then
     if [ ! -f "${SERVER_HOME}"/.adminpassword ]; then
       openssl rand -base64 8 >"${SERVER_HOME}"/.adminpassword
     fi
@@ -75,6 +77,8 @@ runServer() {
   if [ -n "${PZ_DEBUG+x}" ]; then
     parameters="${parameters} -debug"
   fi
+
+  date +%d-%m-%y_%H >"${SERVER_HOME}"/log_start.txt
 
   eval "${SERVER_HOME}/start-server.sh ${parameters} $*"
 }
