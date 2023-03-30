@@ -1,19 +1,17 @@
-ARG IMAGE_ALPINE_NAME
-ARG IMAGE_ALPINE_VERSION
 ARG IMAGE_DEBIAN_NAME
 ARG IMAGE_DEBIAN_VERSION
 
 
-FROM ${IMAGE_ALPINE_NAME}:${IMAGE_ALPINE_VERSION} AS build
+FROM ${IMAGE_DEBIAN_NAME}:${IMAGE_DEBIAN_VERSION} AS build
 LABEL maintainer="Sebastian Korzeniecki <seba5zer@gmail.com>"
 
 WORKDIR /opt/steamcmd
 
 COPY server_script.txt ./
 
-RUN apk add curl && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl gzip && \
   chmod g+rwxs /opt/steamcmd && \
-  curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
+  curl -ksqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 
 FROM ${IMAGE_DEBIAN_NAME}:${IMAGE_DEBIAN_VERSION} AS install
@@ -27,9 +25,9 @@ ENV SERVER_HOME=${USER_HOME}/server
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   lib32gcc-s1 ca-certificates netcat && \
-  adduser --disabled-password ${STEAM_USER} && \
-  addgroup ${STEAM_USER} root && \
-  addgroup root ${STEAM_USER} && \
+  adduser --disabled-password --quiet ${STEAM_USER} && \
+  addgroup --quiet ${STEAM_USER} root && \
+  addgroup --quiet root ${STEAM_USER} && \
   mkdir -p ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
   chmod g+rwxs ${USER_HOME} ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
   chown -R ${STEAM_USER}:0 ${USER_HOME}

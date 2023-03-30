@@ -6,8 +6,6 @@ services:
       target: install
       network: host
       args:
-        IMAGE_ALPINE_NAME: ${IMAGE_ALPINE_NAME}
-        IMAGE_ALPINE_VERSION: ${IMAGE_ALPINE_VERSION}
         IMAGE_DEBIAN_NAME: ${IMAGE_DEBIAN_NAME}
         IMAGE_DEBIAN_VERSION: ${IMAGE_DEBIAN_VERSION}
       cache_from:
