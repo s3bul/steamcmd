@@ -10,8 +10,8 @@ WORKDIR /opt/steamcmd
 COPY server_script.txt ./
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl gzip && \
-  chmod g+rwxs /opt/steamcmd && \
-  curl -ksqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
+    chmod g+rwxs /opt/steamcmd && \
+    curl -ksqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 
 FROM ${IMAGE_DEBIAN_NAME}:${IMAGE_DEBIAN_VERSION} AS install
@@ -24,13 +24,14 @@ ENV STEAMCMD_HOME=${USER_HOME}/steamcmd
 ENV SERVER_HOME=${USER_HOME}/server
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  lib32gcc-s1 ca-certificates netcat && \
-  adduser --disabled-password --quiet ${STEAM_USER} && \
-  addgroup --quiet ${STEAM_USER} root && \
-  addgroup --quiet root ${STEAM_USER} && \
-  mkdir -p ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
-  chmod g+rwxs ${USER_HOME} ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
-  chown -R ${STEAM_USER}:0 ${USER_HOME}
+    lib32gcc-s1 ca-certificates netcat && \
+    adduser --disabled-password --quiet ${STEAM_USER} && \
+    addgroup --quiet ${STEAM_USER} root && \
+    addgroup --quiet root ${STEAM_USER} && \
+    mkdir -p ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
+    chmod g+rwxs ${USER_HOME} ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
+    chown -R ${STEAM_USER}:0 ${USER_HOME} && \
+    rm -rf /var/lib/apt/lists/*
 
 USER ${STEAM_USER}:0
 
