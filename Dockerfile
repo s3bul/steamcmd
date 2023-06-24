@@ -24,10 +24,10 @@ ENV STEAMCMD_HOME=${USER_HOME}/steamcmd
 ENV SERVER_HOME=${USER_HOME}/server
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    lib32gcc-s1 ca-certificates netcat && \
-    adduser --disabled-password --quiet ${STEAM_USER} && \
-    addgroup --quiet ${STEAM_USER} root && \
-    addgroup --quiet root ${STEAM_USER} && \
+    lib32gcc-s1 ca-certificates netcat-openbsd && \
+    adduser --quiet --disabled-password --gecos "" ${STEAM_USER} && \
+    adduser --quiet ${STEAM_USER} root && \
+    adduser --quiet root ${STEAM_USER} && \
     mkdir -p ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
     chmod g+rwxs ${USER_HOME} ${STEAM_HOME} ${STEAMCMD_HOME} ${SERVER_HOME} && \
     chown -R ${STEAM_USER}:0 ${USER_HOME} && \
